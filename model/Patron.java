@@ -19,25 +19,23 @@ import database.*;
 //=========================================================
 public class Patron extends EntityBase 
 {
-	private static final String myTableName = "Patron";
-	
-	protected Properties dependencies;
-	
-	/**
-	 * Patron class constructor: Primary key instantiation
-	 */
-	public Patron(String patronId) throws InvalidPrimaryKeyException
-	{
+    private static final String myTableName = "Patron";
+    
+    protected Properties dependencies;
+    
+    /**
+     * Patron class constructor: Primary key instantiation
+     */
+    public Patron(String patronId) throws InvalidPrimaryKeyException
+    {
 		
-	}
+    }
 	
-	/**
-	 * Patron class constructor: Create new instance
-	 */
-	public Patron(Properties props) 
-	{
-		
-	}
+    /**
+     * Patron class constructor: Create new instance
+     */
+    public Patron(Properties props) 
+    {
 	
-	
+    }
 }
