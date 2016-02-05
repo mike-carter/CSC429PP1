@@ -17,11 +17,13 @@ import database.*;
  * @since 2016-02-02
  */
 //===============================================================
-public class Book extends EntityBase 
+public class Book extends EntityBase
 {
 	private static final String myTableName = "Book";
 
 	protected Properties dependencies;
+
+  private String updateStatusMessage = "";
 
 	/**
 	 * Book class constructor: Primary key instantiation
@@ -37,7 +39,7 @@ public class Book extends EntityBase
 		Vector<Properties> allDataRetrieved = getSelectQueryResult(query);
 
 		// We must get at least one book
-		if (allDataRetrieved != null) 
+		if (allDataRetrieved != null)
 		{
 			int size = allDataRetrieved.size();
 
@@ -46,19 +48,19 @@ public class Book extends EntityBase
 			{
 				throw new InvalidPrimaryKeyException(String.format("Multiple Books matching id : %s found", bookId));
 			}
-			else 
+			else
 			{
-				// Copy all retrived data into persistant state.
+				// Copy all retrived data into persistent state.
 				Properties retrievedBookData = allDataRetrieved.elementAt(0);
-				persistantState = new Properties();
+				persistentState = new Properties();
 
 				Enumeration allKeys = retrievedBookData.propertyNames();
-				while (allKeys.hasMoreElements()) 
+				while (allKeys.hasMoreElements())
 				{
 					String nextKey = (String)allKeys.nextElement();
 					String nextValue = retrievedBookData.getProperty(nextKey);
 
-					if (nextValue != null) 
+					if (nextValue != null)
 					{
 						persistentState.setProperty(nextKey, nextValue);
 					}
@@ -74,57 +76,65 @@ public class Book extends EntityBase
 	/**
 	 * Book class constructor: Create new instance
 	 */
-	public Book(Properties props) 
+	public Book(Properties props)
 	{
 		super(myTableName);
-		
-		setDependencies();
-		
-		persistantState = new Properties();
 
-		Enumeration allKeys = retrievedBookData.propertyNames();
-		while (allKeys.hasMoreElements()) 
+		setDependencies();
+
+		persistentState = new Properties();
+
+		Enumeration allKeys = props.propertyNames();
+		while (allKeys.hasMoreElements())
 		{
 			String nextKey = (String)allKeys.nextElement();
-			String nextValue = retrievedBookData.getProperty(nextKey);
+			String nextValue = props.getProperty(nextKey);
 
-			if (nextValue != null) 
+			if (nextValue != null)
 			{
 				persistentState.setProperty(nextKey, nextValue);
 			}
 		}
 	}
-	
-	private void setDependencies() 
+
+	private void setDependencies()
 	{
 		dependencies = new Properties();
 
 		myRegistry.setDependencies(dependencies);
 	}
-	
+
+	//-----------------------------------------------------------------------------------
+	public static int compare(Book a, Book b)
+	{
+		String aNum = (String)a.getState("title");
+		String bNum = (String)b.getState("title");
+
+		return aNum.compareTo(bNum);
+	}
 	/**
 	 * Update Book information in the database
 	 */
 	//----------------------------------------------------------
-	public void update() 
+	public void update()
 	{
 		updateStateInDatabase();
 	}
-	
+
 	/**	*/
 	//----------------------------------------------------------
-	private void updateStateInDatabase() 
+	private void updateStateInDatabase()
 	{
 		try
 		{
 			if (persistentState.getProperty("bookId") != null)
 			{
 				Properties whereClause = new Properties();
-				
+
 				whereClause.setProperty("bookId", persistentState.getProperty("bookId"));
-				
+
 				updatePersistentState(mySchema, persistentState, whereClause);
-				
+
 				updateStatusMessage = String.format("Data for Book Id : %s updated successfully in database!",
 						persistentState.getProperty("AccountNumber"));
 			}
@@ -132,7 +142,7 @@ public class Book extends EntityBase
 			{
 				Integer bookId = insertAutoIncrementalPersistentState(mySchema, persistentState);
 				persistentState.setProperty("bookId", bookId.toString());
-				updateStatusMessage = String.format("Data for new Book : %s installed successfully in database!", 
+				updateStatusMessage = String.format("Data for new Book : %s installed successfully in database!",
 						persistentState.getProperty("bookId"));
 			}
 		}
@@ -140,6 +150,13 @@ public class Book extends EntityBase
 		{
 			updateStatusMessage = "Error in installing book data in database!";
 		}
+	}
+
+	//----------------------------------------------------------------
+	public void stateChangeRequest(String key, Object value)
+	{
+
+		myRegistry.updateSubscribers(key, this);
 	}
 
 	/**
@@ -153,44 +170,53 @@ public class Book extends EntityBase
 
 		return persistentState.getProperty(key);
 	}
-	
+
 	/**
-	 * 
+	 *
 	 */
-	public boolean isBookAvailable() 
+	public boolean isBookAvailable()
 	{
-		String status = persistantState.getProperty("status");
+		String status = persistentState.getProperty("status");
 		status = status.toLowerCase();
-		
-		if (status.equals("in")) 
+
+		if (status.equals("in"))
 			return true;
-		
+
 		return false;
 	}
-	
+
 	/**
-	 * 
+	 *
 	 */
 	//----------------------------------------------------------
-	public void checkoutBook() 
+	public void checkoutBook()
 	{
-		String status = persistantState.getProperty("status");
+		String status = persistentState.getProperty("status");
 		status = status.toLowerCase();
-		
+
 		if (status.equals("in"))
-			persistantState.setProperty("status", "out");
+			persistentState.setProperty("status", "out");
 	}
-	
+
 	/**
-	 * 
+	 *
 	 */
 	//----------------------------------------------------------
-	public void returnBook() 
+	public void returnBook()
 	{
-		String status = persistantState.getProperty("status");
+		String status = persistentState.getProperty("status");
 		status = status.toLowerCase();
-		
+
 		if (status.equals("out"))
-			persistantState.setProperty("status", "in");
+			persistentState.setProperty("status", "in");
+	}
+
+	//-----------------------------------------------------------------------------------
+	protected void initializeSchema(String tableName)
+	{
+		if (mySchema == null)
+		{
+			mySchema = getSchemaInfo(tableName);
+		}
 	}
 }

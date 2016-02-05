@@ -14,37 +14,48 @@ import database.*;
  * @since 2016-02-02
  */
 //=========================================================
-public class BookCollection extends EntityBase 
+public class BookCollection extends EntityBase
 {
 	private static final String myTableName = "Book";
-	
+
 	private Vector<Book> books;
-	
+
 	/**
 	 * BookCollection class constructor
 	 */
 	public BookCollection()
 	{
+		super(myTableName);
+
 		books = new Vector<Book>();
 	}
-	
-	public void findBooksOlderThanDate(String year) 
+
+	public void findBooksOlderThanDate(String year)
 	{
-		
+
 	}
-	
-	public void findBooksNewerThanDate(String year) 
+
+	public void findBooksNewerThanDate(String year)
 	{
-		
+
 	}
-	
-	public void findBooksWithTitleLike(String title) 
+
+	public void findBooksWithTitleLike(String title)
 	{
-		
+
 	}
-	
-	public void findBooksWithAuthorLike(String author) 
+
+	public void findBooksWithAuthorLike(String author)
 	{
-		
+
+	}
+
+	//-----------------------------------------------------------------------------------
+	protected void initializeSchema(String tableName)
+	{
+		if (mySchema == null)
+		{
+			mySchema = getSchemaInfo(tableName);
+		}
 	}
 }

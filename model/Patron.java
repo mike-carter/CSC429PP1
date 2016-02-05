@@ -23,6 +23,8 @@ public class Patron extends EntityBase
 
     protected Properties dependencies;
 
+    private String updateStatusMessage = "";
+
     /**
      * Patron class constructor: Primary key instantiation
      */
@@ -49,7 +51,7 @@ public class Patron extends EntityBase
           else
           {
             //Copy all retrived data into persistance state
-            Properties retrievedPatronData = allDataRetrieved.elementAt(0));
+            Properties retrievedPatronData = allDataRetrieved.elementAt(0);
             persistentState = new Properties();
 
             Enumeration allKeys = retrievedPatronData.propertyNames();
@@ -83,11 +85,11 @@ public class Patron extends EntityBase
 
       persistentState = new Properties();
 
-      Enumeration allKeys = retrievedPatronData.propertyNames();
+      Enumeration allKeys = props.propertyNames();
       while (allKeys.hasMoreElements())
       {
-        Striung nextKey = (String)allKeys.nextElement();
-        String nextValue = retrievedPatronData.getProperty(nextKey);
+        String nextKey = (String)allKeys.nextElement();
+        String nextValue = props.getProperty(nextKey);
 
         if (nextValue != null)
         {
@@ -126,8 +128,8 @@ public class Patron extends EntityBase
          else
          {
            Integer patronId = insertAutoIncrementalPersistentState(mySchema, persistentState);
-           persistantState.setProperty("patronId", patronId.toString());
-           updateStatusMessage = String.format("Data for new Patron : %s addedd successfully in database!", persistantState.getProperty("patronId"));
+           persistentState.setProperty("patronId", patronId.toString());
+           updateStatusMessage = String.format("Data for new Patron : %s addedd successfully in database!", persistentState.getProperty("patronId"));
          }
        }
        catch (SQLException ex)
@@ -138,17 +140,24 @@ public class Patron extends EntityBase
      /**
       * Gets the value of a specified property
       */
-      public Objext getState(String key)
+      public Object getState(String key)
       {
         if (key.equals("updateStatusMessage") == true)
           return updateStatusMessage;
 
-        return persistantState.getProperty(key);
+        return persistentState.getProperty(key);
       }
+
+      //----------------------------------------------------------------
+    	public void stateChangeRequest(String key, Object value)
+    	{
+
+    		myRegistry.updateSubscribers(key, this);
+    	}
 
       public boolean isPatronActive()
       {
-        String status = persistantState.getProperty("patronStatus");
+        String status = persistentState.getProperty("patronStatus");
         status = status.toLowerCase();
 
         if(status.equals("act"))
@@ -159,19 +168,28 @@ public class Patron extends EntityBase
 
       public void setPatronInactive()
       {
-        String status = persistantState.getProperty("patronStatus");
+        String status = persistentState.getProperty("patronStatus");
         status = status.toLowerCase();
 
         if(status.equals("act"))
-          persistantState.setProperty("patronStatus", "inc");
+          persistentState.setProperty("patronStatus", "inc");
       }
 
       public void setPatronActive()
       {
-        String status = persistantState.getProperty("patronStatus");
+        String status = persistentState.getProperty("patronStatus");
         status = status.toLowerCase();
 
         if (status.equals("inc"))
-          persistantState.setProperty("patronStatus", "act");
+          persistentState.setProperty("patronStatus", "act");
       }
+
+      //-----------------------------------------------------------------------------------
+    	protected void initializeSchema(String tableName)
+    	{
+    		if (mySchema == null)
+    		{
+    			mySchema = getSchemaInfo(tableName);
+    		}
+    	}
 }

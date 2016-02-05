@@ -17,27 +17,35 @@ import database.*;
  * @since 2016-02-02
  */
 //=========================================================
-public class Transaction extends EntityBase 
+public class Transaction extends EntityBase
 {
 	private static final String myTableName = "Transaction";
-	
+
 	protected Properties dependencies;
-	
+
 	/**
 	 * Transaction class constructor: Primary key instantiation
 	 */
 	public Transaction(String transId) throws InvalidPrimaryKeyException
 	{
-		
+
 	}
-	
+
 	/**
 	 * Transaction class constructor: Create new instance
 	 */
-	public Transaction(Properties props) 
+	public Transaction(Properties props)
 	{
-		
+
 	}
-	
-	
+
+	//-----------------------------------------------------------------------------------
+	protected void initializeSchema(String tableName)
+	{
+		if (mySchema == null)
+		{
+			mySchema = getSchemaInfo(tableName);
+		}
+	}
+
 }
