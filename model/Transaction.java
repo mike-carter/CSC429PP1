@@ -62,7 +62,7 @@ public class Transaction extends EntityBase
 
 					if (nextValue != null)
 					{
-						persistentState,setProperty(nextKey, nextValue);
+						persistentState.setProperty(nextKey, nextValue);
 					}
 				}
 			}
@@ -121,7 +121,7 @@ public class Transaction extends EntityBase
 
 				updatePersistentState(mySchema, persistentState, whereClause);
 
-				updateStatusMessage = String.format("Data for Transaction ID: %s updated successfully in database!"), persistentState.getProperty("transId"));
+				updateStatusMessage = String.format("Data for Transaction ID: %s updated successfully in database!", persistentState.getProperty("transId"));
 			}
 			else
 			{
