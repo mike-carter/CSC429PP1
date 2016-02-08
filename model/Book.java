@@ -28,6 +28,7 @@ public class Book extends EntityBase
 	/**
 	 * Book class constructor: Primary key instantiation
 	 */
+	@SuppressWarnings("unchecked")
 	public Book(String bookId) throws InvalidPrimaryKeyException
 	{
 		super(myTableName);
@@ -211,7 +212,7 @@ public class Book extends EntityBase
 			persistentState.setProperty("status", "in");
 	}
 
-	//-----------------------------------------------------------------------------------
+	//-----------------------------------------------------------
 	protected void initializeSchema(String tableName)
 	{
 		if (mySchema == null)
