@@ -136,7 +136,7 @@ public class Book extends EntityBase
 				updatePersistentState(mySchema, persistentState, whereClause);
 
 				updateStatusMessage = String.format("Data for Book Id : %s updated successfully in database!",
-						persistentState.getProperty("AccountNumber"));
+						persistentState.getProperty("bookId"));
 			}
 			else
 			{

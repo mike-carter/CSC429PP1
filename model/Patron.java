@@ -50,7 +50,7 @@ public class Patron extends EntityBase
           }
           else
           {
-            //Copy all retrived data into persistance state
+            //Copy all retrived data into persistence state
             Properties retrievedPatronData = allDataRetrieved.elementAt(0);
             persistentState = new Properties();
 
