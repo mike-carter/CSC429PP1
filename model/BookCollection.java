@@ -59,7 +59,7 @@ public class BookCollection extends EntityBase implements IView
 		}
 		else
 		{
-			throw new InvalidPrimaryKeyException("No books younger than: " + year + "found" + year.getState("Book"));
+			throw new InvalidPrimaryKeyException("No books younger than: " + year + "found");
 		}
 	}
 
@@ -67,24 +67,67 @@ public class BookCollection extends EntityBase implements IView
 	//-----------------------------------------------------------
 	public void findBooksWithTitleLike(String title)
 	{
+		String query = "SELECT * FROM " + myTableName + " WHERE title LIKE " + title + "";
+		Vector allDataRetrieved = getSelectQueryResult(query);
 
+		if (allDataRetrieved != null)
+		{
+			books = new Vector<Book>();
+
+			for(int cnt = 0; cnt < allDataRetrieved.size(); cnt++)
+			{
+				Properties nextBookData = (Properties)allDataRetrieved.elementAt(cnt);
+
+				Book book = new Book(nextBookData);
+
+				if(book != null)
+				{
+					addBook(book);
+				}
+			}
+		}
+		else
+		{
+			throw new InvalidPrimaryKeyException("No books with similar title to: " + title + "found");
+		}
 	}
-
 	/** */
 	//-----------------------------------------------------------
 	public void findBooksWithAuthorLike(String author)
 	{
+		String query = "SELECT * FROM " + myTableName + " WHERE author LIKE " + author + "";
+		Vector allDataRetrieved = getSelectQueryResult(query);
 
+		if (allDataRetrieved != null)
+		{
+			books = new Vector<Book>();
+
+			for(int cnt = 0; cnt < allDataRetrieved.size(); cnt++)
+			{
+				Properties nextBookData = (Properties)allDataRetrieved.elementAt(cnt);
+
+				Book book = new Book(nextBookData);
+
+				if(book != null)
+				{
+					addBook(book);
+				}
+			}
+		}
+		else
+		{
+			throw new InvalidPrimaryKeyException("No books with Author: " + author + "found");
+		}
 	}
 	//-----------------------------------------------------------
 	private int findIndexToAdd(Book a)
 	{
 		//users.add(u);
-		int low=0;
+		int low = 0;
 		int high = books.size()-1;
 		int middle;
 
-		while (low <=high)
+		while (low <= high)
 		{
 			middle = (low+high)/2;
 
@@ -92,17 +135,17 @@ public class BookCollection extends EntityBase implements IView
 
 			int result = Book.compare(a,midSession);
 
-			if (result ==0)
+			if (result == 0)
 			{
 				return middle;
 			}
-			else if (result<0)
+			else if (result < 0)
 			{
-				high=middle-1;
+				high = middle-1;
 			}
 			else
 			{
-				low=middle+1;
+				low = middle+1;
 			}
 		}
 		return low;
@@ -116,6 +159,23 @@ public class BookCollection extends EntityBase implements IView
 		if (key.equals("BookList"))
 			return this;
 		return null;
+	}
+	//-----------------------------------------------------------
+	public Book retrieve(String bookId)
+	{
+		Book retValue = null;
+		for (int cnt = 0; cnt < books.size(); cnt++)
+		{
+			Book nextBook = books.elementAt(cnt);
+			String nextBookNum = (String)nextBook.getState("BookId");
+			if (nextBookNum.equals(bookId) == true)
+			{
+				retValue = nextBook;
+				return retValue; // we should say 'break;' here
+			}
+		}
+
+		return retValue;
 	}
 	//-----------------------------------------------------------
 	public void updateState(String key, Object value)
