@@ -62,8 +62,8 @@ public class ViewFactory {
 		else if(viewName.equals("TransferReceipt") == true)
 		{
 			return new TransferReceipt(model);
-		}*/
-		else
+		}
+		else*/
 			return null;
 	}
 

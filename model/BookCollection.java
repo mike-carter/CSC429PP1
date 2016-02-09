@@ -19,7 +19,7 @@ import userinterface.ViewFactory;
  * @since 2016-02-02
  */
 //=========================================================
-public class BookCollection extends EntityBase
+public class BookCollection extends EntityBase implements IView
 {
 	private static final String myTableName = "Book";
 
@@ -39,7 +39,7 @@ public class BookCollection extends EntityBase
 	public void findBooksOlderThanDate(String year)
 	{
 		String query = "SELECT * FROM " + myTableName + " WHERE (pubYear < " + year + "";
-		Vector allDataRetrieved = getSelectQueryResult;
+		Vector allDataRetrieved = getSelectQueryResult(query);
 
 		if (allDataRetrieved != null)
 		{
@@ -59,7 +59,7 @@ public class BookCollection extends EntityBase
 		}
 		else
 		{
-			throw new InvalidPrimaryKeyException("No books younger than: " + year + "found");
+			throw new InvalidPrimaryKeyException("No books younger than: " + year + "found" + year.getState("Book"));
 		}
 	}
 
@@ -76,7 +76,64 @@ public class BookCollection extends EntityBase
 	{
 
 	}
+	//-----------------------------------------------------------
+	private int findIndexToAdd(Book a)
+	{
+		//users.add(u);
+		int low=0;
+		int high = books.size()-1;
+		int middle;
 
+		while (low <=high)
+		{
+			middle = (low+high)/2;
+
+			Book midSession = books.elementAt(middle);
+
+			int result = Book.compare(a,midSession);
+
+			if (result ==0)
+			{
+				return middle;
+			}
+			else if (result<0)
+			{
+				high=middle-1;
+			}
+			else
+			{
+				low=middle+1;
+			}
+		}
+		return low;
+	}
+	//-----------------------------------------------------------
+	public Object getState(String key)
+	{
+		if (key.equals("Books"))
+			return books;
+		else
+		if (key.equals("BookList"))
+			return this;
+		return null;
+	}
+	//-----------------------------------------------------------
+	public void updateState(String key, Object value)
+	{
+		stateChangeRequest(key, value);
+	}
+	//-----------------------------------------------------------
+	public void stateChangeRequest(String key, Object value)
+	{
+		myRegistry.updateSubscribers(key, this);
+	}
+	//-----------------------------------------------------------
+	private void addBook(Book a)
+	{
+		//books.add(a);
+		int index = findIndexToAdd(a);
+		books.insertElementAt(a,index); // To build up a collection sorted on some key
+	}
 	//-----------------------------------------------------------
 	protected void initializeSchema(String tableName)
 	{
