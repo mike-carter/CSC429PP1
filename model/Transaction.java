@@ -28,6 +28,8 @@ public class Transaction extends EntityBase
 	/**
 	 * Transaction class constructor: Primary key instantiation
 	 */
+	//-----------------------------------------------------------
+	@SuppressWarnings("unchecked")
 	public Transaction(String transId) throws InvalidPrimaryKeyException
 	{
 		super(myTableName);
@@ -54,7 +56,7 @@ public class Transaction extends EntityBase
 				Properties retrivedTransData = allDataRetrieved.elementAt(0);
 				persistentState = new Properties();
 
-				Enumeration allKeys = retrievedBookData.propertyNames();
+				Enumeration allKeys = retrivedTransData.propertyNames();
 				while (allKeys.hasMoreElements())
 				{
 					String nextKey = (String)allKeys.nextElement();
@@ -76,6 +78,7 @@ public class Transaction extends EntityBase
 	/**
 	 * Transaction class constructor: Create new instance
 	 */
+	//-----------------------------------------------------------
 	public Transaction(Properties props)
 	{
 		super(myTableName);
@@ -96,19 +99,25 @@ public class Transaction extends EntityBase
 			}
 		}
 	}
-	//----------------------------------------------------------------------------
+
+	/** */
+	//-----------------------------------------------------------
 	private void setDependencies()
 	{
 		dependencies = new Properties();
 
 		myRegistry.setDependencies(dependencies);
 	}
-	//--------------------------------------------------------------------------------
+
+	/** */
+	//-----------------------------------------------------------
 	public void update()
 	{
 		updateStateInDatabase();
 	}
-	//----------------------------------------------------------------------------------
+	
+	/** */
+	//-----------------------------------------------------------
 	private void updateStateInDatabase()
 	{
 		try
@@ -125,7 +134,7 @@ public class Transaction extends EntityBase
 			}
 			else
 			{
-				Interger transId = insertAutoIncrementalPersistentState(mySchema, persistentState);
+				Integer transId = insertAutoIncrementalPersistentState(mySchema, persistentState);
 				persistentState.setProperty("transId", transId.toString());
 				updateStatusMessage = String.format("Data for new Transaction: %s added to database successfullt!", persistentState.getProperty("transId"));
 			}
@@ -135,11 +144,14 @@ public class Transaction extends EntityBase
 			updateStatusMessage = "Error adding Transaction data to database!";
 		}
 	}
-	//-----------------------------------------------------------------------------------
+	
+	/** */
+	//-----------------------------------------------------------
 	public void stateChangeRequest(String key, Object value)
 	{
 		myRegistry.updateSubscribers(key, this);
 	}
+	
 	/**
 	 * Gets the value of a specified property
 	 */
@@ -151,7 +163,9 @@ public class Transaction extends EntityBase
 
 		return persistentState.getProperty(key);
 	}
-	//-----------------------------------------------------------------------------------
+	
+	/** */
+	//-----------------------------------------------------------
 	protected void initializeSchema(String tableName)
 	{
 		if (mySchema == null)
@@ -159,5 +173,4 @@ public class Transaction extends EntityBase
 			mySchema = getSchemaInfo(tableName);
 		}
 	}
-
 }

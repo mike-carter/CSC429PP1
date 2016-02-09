@@ -34,6 +34,8 @@ public class BookCollection extends EntityBase
 		books = new Vector<Book>();
 	}
 
+	/** */
+	//-----------------------------------------------------------
 	public void findBooksOlderThanDate(String year)
 	{
 		System.out.println("Please enter a Date to search for older books");
@@ -47,7 +49,7 @@ public class BookCollection extends EntityBase
 		{
 			System.out.println("No values returned from database for query");
 		}
-				else
+		else
 		{
 			int numResults = returnedValues.size();
 			for (int cnt = 0; cnt < numResults; cnt++)
@@ -66,6 +68,8 @@ public class BookCollection extends EntityBase
 		}
 	}
 
+	/** */
+	//-----------------------------------------------------------
 	public void findBooksNewerThanDate(String year)
 	{
 		System.out.println("Please enter a Date to search for newer books");
@@ -79,7 +83,7 @@ public class BookCollection extends EntityBase
 		{
 			System.out.println("No values returned from database for query");
 		}
-				else
+		else
 		{
 			int numResults = returnedValues.size();
 			for (int cnt = 0; cnt < numResults; cnt++)
@@ -98,17 +102,21 @@ public class BookCollection extends EntityBase
 		}
 	}
 
+	/** */
+	//-----------------------------------------------------------
 	public void findBooksWithTitleLike(String title)
 	{
 
 	}
 
+	/** */
+	//-----------------------------------------------------------
 	public void findBooksWithAuthorLike(String author)
 	{
 
 	}
 
-	//-----------------------------------------------------------------------------------
+	//-----------------------------------------------------------
 	protected void initializeSchema(String tableName)
 	{
 		if (mySchema == null)
