@@ -23,7 +23,7 @@ public class Book extends EntityBase
 
 	protected Properties dependencies;
 
-  private String updateStatusMessage = "";
+	private String updateStatusMessage = "";
 
 	/**
 	 * Book class constructor: Primary key instantiation
@@ -113,6 +113,7 @@ public class Book extends EntityBase
 
 		return aNum.compareTo(bNum);
 	}
+	
 	/**
 	 * Update Book information in the database
 	 */

@@ -36,7 +36,7 @@ public class BookCollection extends EntityBase implements IView
 
 	/** */
 	//-----------------------------------------------------------
-	public void findBooksOlderThanDate(String year)
+	public void findBooksOlderThanDate(String year) throws InvalidPrimaryKeyException
 	{
 		String query = "SELECT * FROM " + myTableName + " WHERE (pubYear < " + year + "";
 		Vector allDataRetrieved = getSelectQueryResult(query);
@@ -59,13 +59,43 @@ public class BookCollection extends EntityBase implements IView
 		}
 		else
 		{
-			throw new InvalidPrimaryKeyException("No books younger than: " + year + "found");
+			throw new InvalidPrimaryKeyException("No books older than: " + year + " found");
 		}
 	}
 
 	/** */
 	//-----------------------------------------------------------
-	public void findBooksWithTitleLike(String title)
+	public void findBooksNewerThanDate(String year) throws InvalidPrimaryKeyException
+	{
+		String query = "SELECT * FROM " + myTableName + " WHERE (pubYear > " + year + "";
+		Vector allDataRetrieved = getSelectQueryResult(query);
+
+		if (allDataRetrieved != null)
+		{
+			books = new Vector<Book>();
+
+			for(int cnt = 0; cnt < allDataRetrieved.size(); cnt++)
+			{
+				Properties nextBookData = (Properties)allDataRetrieved.elementAt(cnt);
+
+				Book book = new Book(nextBookData);
+
+				if(book != null)
+				{
+					addBook(book);
+				}
+			}
+		}
+		else
+		{
+			throw new InvalidPrimaryKeyException("No books newer than: " + year + " found");
+		}
+		
+	}
+
+	/** */
+	//-----------------------------------------------------------
+	public void findBooksWithTitleLike(String title) throws InvalidPrimaryKeyException
 	{
 		String query = "SELECT * FROM " + myTableName + " WHERE title LIKE " + title + "";
 		Vector allDataRetrieved = getSelectQueryResult(query);
@@ -88,12 +118,13 @@ public class BookCollection extends EntityBase implements IView
 		}
 		else
 		{
-			throw new InvalidPrimaryKeyException("No books with similar title to: " + title + "found");
+			throw new InvalidPrimaryKeyException("No books with similar title to: " + title + " found");
 		}
 	}
+	
 	/** */
 	//-----------------------------------------------------------
-	public void findBooksWithAuthorLike(String author)
+	public void findBooksWithAuthorLike(String author) throws InvalidPrimaryKeyException
 	{
 		String query = "SELECT * FROM " + myTableName + " WHERE author LIKE " + author + "";
 		Vector allDataRetrieved = getSelectQueryResult(query);
@@ -116,9 +147,11 @@ public class BookCollection extends EntityBase implements IView
 		}
 		else
 		{
-			throw new InvalidPrimaryKeyException("No books with Author: " + author + "found");
+			throw new InvalidPrimaryKeyException("No books with Author: " + author + " found");
 		}
 	}
+
+	/** */
 	//-----------------------------------------------------------
 	private int findIndexToAdd(Book a)
 	{
@@ -150,6 +183,8 @@ public class BookCollection extends EntityBase implements IView
 		}
 		return low;
 	}
+
+	/** */
 	//-----------------------------------------------------------
 	public Object getState(String key)
 	{
@@ -160,6 +195,8 @@ public class BookCollection extends EntityBase implements IView
 			return this;
 		return null;
 	}
+
+	/** */
 	//-----------------------------------------------------------
 	public Book retrieve(String bookId)
 	{
@@ -177,16 +214,22 @@ public class BookCollection extends EntityBase implements IView
 
 		return retValue;
 	}
+
+	/** */
 	//-----------------------------------------------------------
 	public void updateState(String key, Object value)
 	{
 		stateChangeRequest(key, value);
 	}
+
+	/** */
 	//-----------------------------------------------------------
 	public void stateChangeRequest(String key, Object value)
 	{
 		myRegistry.updateSubscribers(key, this);
 	}
+	
+	/** */
 	//-----------------------------------------------------------
 	private void addBook(Book a)
 	{
@@ -194,6 +237,8 @@ public class BookCollection extends EntityBase implements IView
 		int index = findIndexToAdd(a);
 		books.insertElementAt(a,index); // To build up a collection sorted on some key
 	}
+
+	/** */
 	//-----------------------------------------------------------
 	protected void initializeSchema(String tableName)
 	{

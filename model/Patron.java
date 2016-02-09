@@ -103,6 +103,16 @@ public class Patron extends EntityBase
 
 	/** */
 	//-----------------------------------------------------------
+	public static int compare(Patron a, Patron b)
+	{
+		String aNum = (String)a.getState("name");
+		String bNum = (String)b.getState("name");
+
+		return aNum.compareTo(bNum);
+	}
+
+	/** */
+	//-----------------------------------------------------------
 	private void setDependencies()
 	{
 		dependencies = new Properties();

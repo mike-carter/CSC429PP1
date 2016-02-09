@@ -100,6 +100,15 @@ public class Transaction extends EntityBase
 		}
 	}
 
+	//-----------------------------------------------------------------------------------
+	public static int compare(Transaction a, Transaction b)
+	{
+		String aNum = (String)a.getState("title");
+		String bNum = (String)b.getState("title");
+
+		return aNum.compareTo(bNum);
+	}
+
 	/** */
 	//-----------------------------------------------------------
 	private void setDependencies()
