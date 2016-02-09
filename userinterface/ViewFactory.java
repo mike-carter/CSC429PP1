@@ -7,7 +7,7 @@ public class ViewFactory {
 
 	public static View createView(String viewName, IModel model)
 	{
-		if(viewName.equals("TellerView") == true)
+		/*if(viewName.equals("TellerView") == true)
 		{
 			return new TellerView(model);
 		}
@@ -62,7 +62,7 @@ public class ViewFactory {
 		else if(viewName.equals("TransferReceipt") == true)
 		{
 			return new TransferReceipt(model);
-		}
+		}*/
 		else
 			return null;
 	}

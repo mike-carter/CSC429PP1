@@ -38,67 +38,28 @@ public class BookCollection extends EntityBase
 	//-----------------------------------------------------------
 	public void findBooksOlderThanDate(String year)
 	{
-		System.out.println("Please enter a Date to search for older books");
-		Scanner sc = new Scanner(System.in);
-		String oYear = sc.next();
-		String query = "SELECT * FROM Book WHERE (pubYear < " +oYear+ ")";
+		String query = "SELECT * FROM " + myTableName + " WHERE (pubYear < " + year + "";
+		Vector allDataRetrieved = getSelectQueryResult;
 
-		dbAcc.setSQLStatement(query);
-		Vector returnedValues = dbAcc.executeSQLSelectStatement();
-		if (returnedValues == null)
+		if (allDataRetrieved != null)
 		{
-			System.out.println("No values returned from database for query");
-		}
-		else
-		{
-			int numResults = returnedValues.size();
-			for (int cnt = 0; cnt < numResults; cnt++)
+			books = new Vector<Book>();
+
+			for(int cnt = 0; cnt < allDataRetrieved.size(); cnt++)
 			{
-				Properties nextRow = (Properties)returnedValues.elementAt(cnt);
+				Properties nextBookData = (Properties)allDataRetrieved.elementAt(cnt);
 
-				Enumeration columnNames = nextRow.propertyNames();
-				while (columnNames.hasMoreElements() == true)
+				Book book = new Book(nextBookData);
+
+				if(book != null)
 				{
-					String columnName = (String)columnNames.nextElement();
-					String columnValue = nextRow.getProperty(columnName);
-
-					System.out.println(columnName + " = " + columnValue);
+					addBook(book);
 				}
 			}
 		}
-	}
-
-	/** */
-	//-----------------------------------------------------------
-	public void findBooksNewerThanDate(String year)
-	{
-		System.out.println("Please enter a Date to search for newer books");
-		Scanner sc = new Scanner(System.in);
-		String yYear = sc.next();
-		String query = "SELECT * FROM Book WHERE (pubYear > " +yYear+ ")";
-
-		dbAcc.setSQLStatement(query);
-		Vector returnedValues = dbAcc.executeSQLSelectStatement();
-		if (returnedValues == null)
-		{
-			System.out.println("No values returned from database for query");
-		}
 		else
 		{
-			int numResults = returnedValues.size();
-			for (int cnt = 0; cnt < numResults; cnt++)
-			{
-				Properties nextRow = (Properties)returnedValues.elementAt(cnt);
-
-				Enumeration columnNames = nextRow.propertyNames();
-				while (columnNames.hasMoreElements() == true)
-				{
-					String columnName = (String)columnNames.nextElement();
-					String columnValue = nextRow.getProperty(columnName);
-
-					System.out.println(columnName + " = " + columnValue);
-				}
-			}
+			throw new InvalidPrimaryKeyException("No books younger than: " + year + "found");
 		}
 	}
 
