@@ -34,15 +34,11 @@ import model.*;
 import userinterface.MainStageContainer;
 import userinterface.WindowPosition;
 
-public class Library extends Application
+public class Library
 {
-  private Stage mainStage;
-
-  public void start(Stage primaryStage)
-  {
-    System.out.println("Library Version 1.00");
-    System.out.println("© 2016 Michael Carter and Caleb Butcher");
-
-    
-  }
+    public static void main(String[] args)
+    {
+      System.out.println("Library Version 1.00");
+      System.out.println("© 2016 Michael Carter and Caleb Butcher");
+    }
 }
