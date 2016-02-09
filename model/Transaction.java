@@ -36,7 +36,7 @@ public class Transaction extends EntityBase
 
 		setDependencies();
 
-		String query = String.format("SELECT * FROM %s WHERE (transId = %s)", myTableName, transId);
+		String query = String.format("SELECT * FROM %s WHERE (transId = '%s')", myTableName, transId);
 
 		Vector<Properties> allDataRetrieved = getSelectQueryResult(query);
 

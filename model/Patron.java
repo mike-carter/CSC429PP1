@@ -36,7 +36,7 @@ public class Patron extends EntityBase
 
         setDependencies();
 
-        String query = String.format("SELECT * FROM %s WHERE (patronId = %s)", myTableName, patronId);
+        String query = String.format("SELECT * FROM %s WHERE (patronId = '%s')", myTableName, patronId);
 
         Vector<Properties> allDataRetrieved = getSelectQueryResult(query);
 
@@ -205,11 +205,11 @@ public class Patron extends EntityBase
 	//-----------------------------------------------------------
 	public void setPatronActive()
       {
-        String status = persistentState.getProperty("patronStatus");
-        status = status.toLowerCase();
+		  String status = persistentState.getProperty("patronStatus");
+		  status = status.toLowerCase();
 
-        if (status.equals("inc"))
-          persistentState.setProperty("patronStatus", "act");
+		  if (status.equals("inc"))
+			  persistentState.setProperty("patronStatus", "act");
       }
 
 	/** */

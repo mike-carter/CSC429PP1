@@ -38,7 +38,8 @@ public class BookCollection extends EntityBase implements IView
 	//-----------------------------------------------------------
 	public void findBooksOlderThanDate(String year) throws InvalidPrimaryKeyException
 	{
-		String query = "SELECT * FROM " + myTableName + " WHERE (pubYear < " + year + "";
+		String query = String.format("SELECT * FROM %s WHERE pubYear < '%s'", myTableName, year);
+		
 		Vector allDataRetrieved = getSelectQueryResult(query);
 
 		if (allDataRetrieved != null)
@@ -67,7 +68,8 @@ public class BookCollection extends EntityBase implements IView
 	//-----------------------------------------------------------
 	public void findBooksNewerThanDate(String year) throws InvalidPrimaryKeyException
 	{
-		String query = "SELECT * FROM " + myTableName + " WHERE (pubYear > " + year + "";
+		String query = String.format("SELECT * FROM %s WHERE pubYear > '%s'", myTableName, year);
+		
 		Vector allDataRetrieved = getSelectQueryResult(query);
 
 		if (allDataRetrieved != null)
@@ -97,7 +99,8 @@ public class BookCollection extends EntityBase implements IView
 	//-----------------------------------------------------------
 	public void findBooksWithTitleLike(String title) throws InvalidPrimaryKeyException
 	{
-		String query = "SELECT * FROM " + myTableName + " WHERE title LIKE " + title + "";
+		String query = String.format("SELECT * FROM %s WHERE title LIKE '%%%s'%%", myTableName, title);
+		
 		Vector allDataRetrieved = getSelectQueryResult(query);
 
 		if (allDataRetrieved != null)
@@ -126,7 +129,7 @@ public class BookCollection extends EntityBase implements IView
 	//-----------------------------------------------------------
 	public void findBooksWithAuthorLike(String author) throws InvalidPrimaryKeyException
 	{
-		String query = "SELECT * FROM " + myTableName + " WHERE author LIKE " + author + "";
+		String query = String.format("SELECT * FROM %s WHERE author LIKE '%%%s%%'", myTableName, author);
 		Vector allDataRetrieved = getSelectQueryResult(query);
 
 		if (allDataRetrieved != null)

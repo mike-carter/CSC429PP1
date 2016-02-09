@@ -35,7 +35,7 @@ public class Book extends EntityBase
 
 		setDependencies();
 
-		String query = String.format("SELECT * FROM %s WHERE (bookId = %s)", myTableName, bookId);
+		String query = String.format("SELECT * FROM %s WHERE (bookId = '%s')", myTableName, bookId);
 
 		Vector<Properties> allDataRetrieved = getSelectQueryResult(query);
 
@@ -138,14 +138,14 @@ public class Book extends EntityBase
 				updatePersistentState(mySchema, persistentState, whereClause);
 
 				updateStatusMessage = String.format("Data for Book Id : %s updated successfully in database!",
-						persistentState.getProperty("bookId"));
+													persistentState.getProperty("bookId"));
 			}
 			else
 			{
 				Integer bookId = insertAutoIncrementalPersistentState(mySchema, persistentState);
 				persistentState.setProperty("bookId", bookId.toString());
 				updateStatusMessage = String.format("Data for new Book : %s installed successfully in database!",
-						persistentState.getProperty("bookId"));
+													persistentState.getProperty("bookId"));
 			}
 		}
 		catch (SQLException ex)
