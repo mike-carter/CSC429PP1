@@ -19,7 +19,7 @@ import userinterface.ViewFactory;
  * @since 2016-02-02
  */
 //=========================================================
-public class BookCollection extends EntityBase
+public class BookCollection extends EntityBase implements IView
 {
 	private static final String myTableName = "Book";
 
@@ -38,67 +38,28 @@ public class BookCollection extends EntityBase
 	//-----------------------------------------------------------
 	public void findBooksOlderThanDate(String year)
 	{
-		System.out.println("Please enter a Date to search for older books");
-		Scanner sc = new Scanner(System.in);
-		String oYear = sc.next();
-		String query = "SELECT * FROM Book WHERE (pubYear < " +oYear+ ")";
+		String query = "SELECT * FROM " + myTableName + " WHERE (pubYear < " + year + "";
+		Vector allDataRetrieved = getSelectQueryResult(query);
 
-		dbAcc.setSQLStatement(query);
-		Vector returnedValues = dbAcc.executeSQLSelectStatement();
-		if (returnedValues == null)
+		if (allDataRetrieved != null)
 		{
-			System.out.println("No values returned from database for query");
-		}
-		else
-		{
-			int numResults = returnedValues.size();
-			for (int cnt = 0; cnt < numResults; cnt++)
+			books = new Vector<Book>();
+
+			for(int cnt = 0; cnt < allDataRetrieved.size(); cnt++)
 			{
-				Properties nextRow = (Properties)returnedValues.elementAt(cnt);
+				Properties nextBookData = (Properties)allDataRetrieved.elementAt(cnt);
 
-				Enumeration columnNames = nextRow.propertyNames();
-				while (columnNames.hasMoreElements() == true)
+				Book book = new Book(nextBookData);
+
+				if(book != null)
 				{
-					String columnName = (String)columnNames.nextElement();
-					String columnValue = nextRow.getProperty(columnName);
-
-					System.out.println(columnName + " = " + columnValue);
+					addBook(book);
 				}
 			}
 		}
-	}
-
-	/** */
-	//-----------------------------------------------------------
-	public void findBooksNewerThanDate(String year)
-	{
-		System.out.println("Please enter a Date to search for newer books");
-		Scanner sc = new Scanner(System.in);
-		String yYear = sc.next();
-		String query = "SELECT * FROM Book WHERE (pubYear > " +yYear+ ")";
-
-		dbAcc.setSQLStatement(query);
-		Vector returnedValues = dbAcc.executeSQLSelectStatement();
-		if (returnedValues == null)
-		{
-			System.out.println("No values returned from database for query");
-		}
 		else
 		{
-			int numResults = returnedValues.size();
-			for (int cnt = 0; cnt < numResults; cnt++)
-			{
-				Properties nextRow = (Properties)returnedValues.elementAt(cnt);
-
-				Enumeration columnNames = nextRow.propertyNames();
-				while (columnNames.hasMoreElements() == true)
-				{
-					String columnName = (String)columnNames.nextElement();
-					String columnValue = nextRow.getProperty(columnName);
-
-					System.out.println(columnName + " = " + columnValue);
-				}
-			}
+			throw new InvalidPrimaryKeyException("No books younger than: " + year + "found");
 		}
 	}
 
@@ -106,16 +67,133 @@ public class BookCollection extends EntityBase
 	//-----------------------------------------------------------
 	public void findBooksWithTitleLike(String title)
 	{
+		String query = "SELECT * FROM " + myTableName + " WHERE title LIKE " + title + "";
+		Vector allDataRetrieved = getSelectQueryResult(query);
 
+		if (allDataRetrieved != null)
+		{
+			books = new Vector<Book>();
+
+			for(int cnt = 0; cnt < allDataRetrieved.size(); cnt++)
+			{
+				Properties nextBookData = (Properties)allDataRetrieved.elementAt(cnt);
+
+				Book book = new Book(nextBookData);
+
+				if(book != null)
+				{
+					addBook(book);
+				}
+			}
+		}
+		else
+		{
+			throw new InvalidPrimaryKeyException("No books with similar title to: " + title + "found");
+		}
 	}
-
 	/** */
 	//-----------------------------------------------------------
 	public void findBooksWithAuthorLike(String author)
 	{
+		String query = "SELECT * FROM " + myTableName + " WHERE author LIKE " + author + "";
+		Vector allDataRetrieved = getSelectQueryResult(query);
 
+		if (allDataRetrieved != null)
+		{
+			books = new Vector<Book>();
+
+			for(int cnt = 0; cnt < allDataRetrieved.size(); cnt++)
+			{
+				Properties nextBookData = (Properties)allDataRetrieved.elementAt(cnt);
+
+				Book book = new Book(nextBookData);
+
+				if(book != null)
+				{
+					addBook(book);
+				}
+			}
+		}
+		else
+		{
+			throw new InvalidPrimaryKeyException("No books with Author: " + author + "found");
+		}
 	}
+	//-----------------------------------------------------------
+	private int findIndexToAdd(Book a)
+	{
+		//users.add(u);
+		int low = 0;
+		int high = books.size()-1;
+		int middle;
 
+		while (low <= high)
+		{
+			middle = (low+high)/2;
+
+			Book midSession = books.elementAt(middle);
+
+			int result = Book.compare(a,midSession);
+
+			if (result == 0)
+			{
+				return middle;
+			}
+			else if (result < 0)
+			{
+				high = middle-1;
+			}
+			else
+			{
+				low = middle+1;
+			}
+		}
+		return low;
+	}
+	//-----------------------------------------------------------
+	public Object getState(String key)
+	{
+		if (key.equals("Books"))
+			return books;
+		else
+		if (key.equals("BookList"))
+			return this;
+		return null;
+	}
+	//-----------------------------------------------------------
+	public Book retrieve(String bookId)
+	{
+		Book retValue = null;
+		for (int cnt = 0; cnt < books.size(); cnt++)
+		{
+			Book nextBook = books.elementAt(cnt);
+			String nextBookNum = (String)nextBook.getState("BookId");
+			if (nextBookNum.equals(bookId) == true)
+			{
+				retValue = nextBook;
+				return retValue; // we should say 'break;' here
+			}
+		}
+
+		return retValue;
+	}
+	//-----------------------------------------------------------
+	public void updateState(String key, Object value)
+	{
+		stateChangeRequest(key, value);
+	}
+	//-----------------------------------------------------------
+	public void stateChangeRequest(String key, Object value)
+	{
+		myRegistry.updateSubscribers(key, this);
+	}
+	//-----------------------------------------------------------
+	private void addBook(Book a)
+	{
+		//books.add(a);
+		int index = findIndexToAdd(a);
+		books.insertElementAt(a,index); // To build up a collection sorted on some key
+	}
 	//-----------------------------------------------------------
 	protected void initializeSchema(String tableName)
 	{
