@@ -35,11 +35,27 @@ public class TransactionCollection extends EntityBase
 	public void findMatchingTransactions(String bookId, String patronId, String dateOfTrans)
 		throws InvalidPrimaryKeyException
 	{
-		String query = String.format("SELECT * FROM %s WHERE bookId = '%s' AND patronId = '%s' AND dateOfTrans = '%s'",
-									 myTableName,
-									 bookId,
-									 patronId,
-									 dateOfTrans);
+		String query = "SELECT * FROM "+myTableName+" WHERE ";
+		if (bookId != null)
+		{
+			query += "bookId = "+bookId+" ";
+		}
+		if (patronId != null)
+		{
+			if (bookId != null)
+				query += "AND ";
+			query += "patronId = "+patronId+" ";
+		}
+		if (dateOfTrans != null)
+		{
+			if ((bookId != null) || (patronId != null))
+			{
+				query += "AND ";
+			}
+			query += "dateOfTrans = '"+dateOfTrans+"' ";
+		}
+
+
 		Vector allDataRetrieved = getSelectQueryResult(query);
 
 		if (allDataRetrieved != null)
@@ -60,10 +76,7 @@ public class TransactionCollection extends EntityBase
 		}
 		else
 		{
-			throw new InvalidPrimaryKeyException(String.format("No transactions with : bookId='%s', patronId='%s', date='%s' found",
-															   bookId,
-															   patronId,
-															   dateOfTrans));
+			throw new InvalidPrimaryKeyException("No transactions found");
 		}
 	}
 
@@ -111,14 +124,14 @@ public class TransactionCollection extends EntityBase
 	}
 
 	/** */
-	public Transaction retrieve(String patronId)
+	public Transaction retrieve(String transId)
 	{
 		Transaction retValue = null;
 		for (int cnt = 0; cnt < transactions.size(); cnt++)
 		{
 			Transaction nextTransaction = transactions.elementAt(cnt);
-			String nextTransactionNum = (String)nextTransaction.getState("patronId");
-			if (nextTransactionNum.equals(patronId) == true)
+			String nextTransNum = (String)nextTransaction.getState("transId");
+			if (nextTransNum.equals(transId) == true)
 			{
 				retValue = nextTransaction;
 				break;
