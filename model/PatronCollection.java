@@ -34,7 +34,7 @@ public class PatronCollection extends EntityBase
 	//-----------------------------------------------------------
 	public void findPatronsOlderThan(String year) throws InvalidPrimaryKeyException
 	{
-		String query = String.format("SELECT * FROM %s WHERE dateOfBirth < '%s'", myTableName, year);
+		String query = String.format("SELECT * FROM %s WHERE dateOfBirth > '%s'", myTableName, year);
 		
 		Vector allDataRetrieved = getSelectQueryResult(query);
 
@@ -60,9 +60,9 @@ public class PatronCollection extends EntityBase
 		}
 	}
 
-	public void findPatronsNewerThan(String year) throws InvalidPrimaryKeyException
+	public void findPatronsYoungerThan(String year) throws InvalidPrimaryKeyException
 	{
-		String query = String.format("SELECT * FROM %s WHERE dateOfBirth > '%s'", myTableName, year);
+		String query = String.format("SELECT * FROM %s WHERE dateOfBirth < '%s'", myTableName, year);
 		Vector allDataRetrieved = getSelectQueryResult(query);
 
 		if (allDataRetrieved != null)
@@ -89,7 +89,7 @@ public class PatronCollection extends EntityBase
 
 	public void findPatronsAtZipCode(String zip) throws InvalidPrimaryKeyException
 	{
-		String query = String.format("SELECT * FROM %s WHERE zip = '%s'", myTableName, zip);
+		String query = String.format("SELECT * FROM %s WHERE zipCode = '%s'", myTableName, zip);
 		Vector allDataRetrieved = getSelectQueryResult(query);
 
 		if (allDataRetrieved != null)

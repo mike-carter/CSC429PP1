@@ -38,7 +38,7 @@ public class BookCollection extends EntityBase implements IView
 	//-----------------------------------------------------------
 	public void findBooksOlderThanDate(String year) throws InvalidPrimaryKeyException
 	{
-		String query = String.format("SELECT * FROM %s WHERE pubYear < '%s'", myTableName, year);
+		String query = String.format("SELECT * FROM %s WHERE pubYear > '%s'", myTableName, year);
 		
 		Vector allDataRetrieved = getSelectQueryResult(query);
 
@@ -68,7 +68,7 @@ public class BookCollection extends EntityBase implements IView
 	//-----------------------------------------------------------
 	public void findBooksNewerThanDate(String year) throws InvalidPrimaryKeyException
 	{
-		String query = String.format("SELECT * FROM %s WHERE pubYear > '%s'", myTableName, year);
+		String query = String.format("SELECT * FROM %s WHERE pubYear < '%s'", myTableName, year);
 		
 		Vector allDataRetrieved = getSelectQueryResult(query);
 
