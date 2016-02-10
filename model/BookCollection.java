@@ -99,7 +99,7 @@ public class BookCollection extends EntityBase implements IView
 	//-----------------------------------------------------------
 	public void findBooksWithTitleLike(String title) throws InvalidPrimaryKeyException
 	{
-		String query = "SELECT * FROM "+myTableName+" WHERE author LIKE '%"+title+"%'";
+		String query = "SELECT * FROM "+myTableName+" WHERE title LIKE '%"+title+"%'";
 		
 		Vector allDataRetrieved = getSelectQueryResult(query);
 
