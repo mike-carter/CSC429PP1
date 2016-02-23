@@ -3,7 +3,6 @@
 // system imports
 import java.util.Scanner;
 import java.util.Vector;
-import java.util.Properties;
 import java.util.Locale;
 import java.util.ResourceBundle;
 import java.io.FileOutputStream;
@@ -44,20 +43,20 @@ public class Library extends Application
     public static void main(String[] args)
     {
 		Scanner stdin = new Scanner(System.in);
+		String userInput;
 		
 		System.out.println("Library Version 1.00");
 		System.out.println("© 2016 Michael Carter and Caleb Butcher");
 
-		// Test Case 1 - Book title search
 		System.out.println();
-		System.out.print("Search Books with title like [Enter search term]: ");
-		String title = stdin.nextLine();
+		System.out.print("Enter a search term for book title: ");
+		userInput = stdin.nextLine();
 
-		System.out.println("Searching for books with '"+title+"' in title...");
+		System.out.println("Searching for books with '"+userInput+"' in title...");
 		BookCollection books = new BookCollection();
 		try
 		{
-			books.findBooksWithTitleLike(title);
+			books.findBooksWithTitleLike(userInput);
 
 			Vector<Book> returnedBooks = (Vector<Book>)books.getState("Books");
 
@@ -79,16 +78,15 @@ public class Library extends Application
 			System.out.println(e.getMessage());
 		}
 
-		// Test Case 2 - Lookup books published before a give year
 		System.out.println();
-		System.out.print("Search books published before [Enter Year]: ");
-		String year = stdin.nextLine();
+		System.out.print("Enter a year [Search books published before]: ");
+		userInput = stdin.nextLine();
 		
-		System.out.println("Searching for books published before '"+year+"'...");
+		System.out.println("Searching for books published before '"+userInput+"'...");
 		books = new BookCollection();
 		try
 		{
-			books.findBooksNewerThanDate(year);
+			books.findBooksNewerThanDate(userInput);
 
 			Vector<Book> returnedBooks = (Vector<Book>)books.getState("Books");
 
@@ -110,16 +108,16 @@ public class Library extends Application
 			System.out.println(e.getMessage());
 		}
 		
-		// Test Case 3 - Get patrons younger than specified year
+
 		System.out.println();
-		System.out.print("Search Patrons younger than [Enter year]: ");
-		year = stdin.nextLine();
+		System.out.print("Enter a year [Search patrons younger than]: ");
+		userInput = stdin.nextLine();
 		
-		System.out.println("Searching for patrons younger than '"+year+"'...");
+		System.out.println("Searching for patrons younger than '"+userInput+"'...");
 		PatronCollection patrons = new PatronCollection();
 		try
 		{
-			patrons.findPatronsYoungerThan(year);
+			patrons.findPatronsYoungerThan(userInput);
 
 			Vector<Patron> returnedPatrons = (Vector<Patron>)patrons.getState("Patrons");
 
@@ -145,16 +143,16 @@ public class Library extends Application
 			System.out.println(e.getMessage());
 		}
 		
-		// Test Case 4 - Search Patrons who live at a zip code
+
 		System.out.println();
-		System.out.print("Search Patrons who live at [Enter 5-digit Zip Code]: ");
-		String zipCode = stdin.nextLine();
+		System.out.print("Enter a zip code [Search Patrons who live at]: ");
+		userInput = stdin.nextLine();
 		
-		System.out.println("Searching for patrons who live at '"+zipCode+"'...");
+		System.out.println("Searching for patrons who live at '"+userInput+"'...");
 		patrons = new PatronCollection();
 		try
 		{
-			patrons.findPatronsAtZipCode(zipCode);
+			patrons.findPatronsAtZipCode(userInput);
 
 			Vector<Patron> returnedPatrons = (Vector<Patron>)patrons.getState("Patrons");
 
@@ -180,24 +178,20 @@ public class Library extends Application
 			System.out.println(e.getMessage());
 		}
 
-		// Test Class 5 - Lookup Transaction
-		/*
+		
 		System.out.println();
-		System.out.print("Search Transactions for Book [Enter a Book ID]: ");
+		System.out.print("Transaction Lookup; Enter a Book ID: ");
 		String bookId = stdin.nextLine();
 		System.out.print("Enter a date [yyyy-mm-dd]: ");
 		String date = stdin.nextLine();
 		
-		System.out.println("Searching for transactions for BookId: '"+bookId+"' on date '"+date+"'...");
+		System.out.println("Searching for transactions for '"+bookId+"' on date '"+date+"'...");
 		TransactionCollection transactions = new TransactionCollection();
 		try
 		{
 			transactions.findMatchingTransactions(bookId, null, date);
 
-			Vector<Transaction> returnedTrans = (Vector<Transaction>)transactions.getState("Transactions");
-
-			if (returnedTrans == null)
-				throw new Exception("The returned collection was empty");
+			Vector<Transaction> returnedTrans = (Vector<Transaction>)patrons.getState("Transactions");
 
 			System.out.println("Results ("+returnedTrans.size()+" transactions returned):" );
 			
@@ -216,29 +210,8 @@ public class Library extends Application
 		{
 			System.out.println(e.getMessage());
 		}
-		*/
-
-		//Test Class 5 - Add Book to the Collection
-		System.out.print("Add book to collection [Enter Title]: ");
-		title = stdin.nextLine();
-		System.out.print("Enter Author: ");
-		String author = stdin.nextLine();
-		System.out.print("Enter Publication Year: ");
-		String pubYear = stdin.nextLine();
-
-		Properties bookProps = new Properties();
-		bookProps.setProperty("title", title);
-		bookProps.setProperty("author", author);
-		bookProps.setProperty("pubYear", pubYear);
-		bookProps.setProperty("bookStatus", "in");
-
-		try {
-			Book newBook = new Book(bookProps);
-			newBook.update();
-		}
-		catch (Exception e) {
-			System.out.println(e.getMessage());
-		}
+		
+		
 		System.exit(0);
     }
 

@@ -35,7 +35,7 @@ public class TransactionCollection extends EntityBase
 	public void findMatchingTransactions(String bookId, String patronId, String dateOfTrans)
 		throws InvalidPrimaryKeyException
 	{
-		String query = "SELECT * FROM "+myTableName+" WHERE (";
+		String query = "SELECT * FROM "+myTableName+" WHERE ";
 		if (bookId != null)
 		{
 			query += "bookId = "+bookId+" ";
@@ -54,16 +54,12 @@ public class TransactionCollection extends EntityBase
 			}
 			query += "dateOfTrans = '"+dateOfTrans+"' ";
 		}
-		query += ")";
 
-		// DEBUG System.out.println("DEBUG::query = '"+query+"'");
 
 		Vector allDataRetrieved = getSelectQueryResult(query);
 
 		if (allDataRetrieved != null)
 		{
-			//DEBUG System.out.println("DEBUG::allDataRetrieved.size() = "+allDataRetrieved.size());
-					
 			transactions = new Vector<Transaction>();
 
 			for(int cnt = 0; cnt < allDataRetrieved.size(); cnt++)
@@ -76,8 +72,6 @@ public class TransactionCollection extends EntityBase
 				{
 					addTransaction(trans);
 				}
-
-				//DEBUG System.out.println("DEBUG::transactions.size() = "+transactions.size());
 			}
 		}
 		else
