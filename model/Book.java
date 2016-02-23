@@ -20,6 +20,7 @@ import database.*;
 public class Book extends EntityBase
 {
 	private static final String myTableName = "Book";
+	
 
 	protected Properties dependencies;
 
