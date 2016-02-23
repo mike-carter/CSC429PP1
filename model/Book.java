@@ -7,10 +7,12 @@ import java.util.Enumeration;
 import java.util.Properties;
 import java.util.Vector;
 import javafx.scene.Scene;
+import javafx.stage.Stage;
 
 // Project imports
 import exception.InvalidPrimaryKeyException;
 import database.*;
+import userinterface.MainStageContainer;
 
 
 /**
@@ -27,12 +29,13 @@ public class Book extends EntityBase
 	private String updateStatusMessage = "";
 
 	protected Stage myStage;
-
 	protected Librarian myLibrarian;
 
 	//-----------------------------------------------------------
 	public Book(Librarian lib)
 	{
+		super(myTableName);
+		
 		myStage = MainStageContainer.getInstance();
 
 		myLibrarian = lib;
@@ -97,7 +100,7 @@ public class Book extends EntityBase
 
 		setDependencies();
 
-		setData(p);
+		setData(props);
 	}
 
 	/**
