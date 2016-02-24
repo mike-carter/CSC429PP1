@@ -23,6 +23,7 @@ public class Patron extends EntityBase
 
     protected Properties dependencies;
 
+	
     private String updateStatusMessage = "";
 
     /**

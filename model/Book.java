@@ -6,10 +6,13 @@ import java.sql.SQLException;
 import java.util.Enumeration;
 import java.util.Properties;
 import java.util.Vector;
+import javafx.scene.Scene;
+import javafx.stage.Stage;
 
 // Project imports
 import exception.InvalidPrimaryKeyException;
 import database.*;
+import userinterface.MainStageContainer;
 
 
 /**
@@ -20,14 +23,28 @@ import database.*;
 public class Book extends EntityBase
 {
 	private static final String myTableName = "Book";
-
+	
 	protected Properties dependencies;
 
 	private String updateStatusMessage = "";
 
+	protected Stage myStage;
+	protected Librarian myLibrarian;
+
+	//-----------------------------------------------------------
+	public Book(Librarian lib)
+	{
+		super(myTableName);
+		
+		myStage = MainStageContainer.getInstance();
+
+		myLibrarian = lib;
+	}
+
 	/**
 	 * Book class constructor: Primary key instantiation
 	 */
+	//-----------------------------------------------------------
 	@SuppressWarnings("unchecked")
 	public Book(String bookId) throws InvalidPrimaryKeyException
 	{
@@ -83,6 +100,15 @@ public class Book extends EntityBase
 
 		setDependencies();
 
+		setData(props);
+	}
+
+	/**
+	 * 
+	 */
+	//-----------------------------------------------------------
+	public void setData(Properties props)
+	{
 		persistentState = new Properties();
 
 		Enumeration allKeys = props.propertyNames();
@@ -97,6 +123,7 @@ public class Book extends EntityBase
 			}
 		}
 	}
+	
 
 	private void setDependencies()
 	{
@@ -105,7 +132,7 @@ public class Book extends EntityBase
 		myRegistry.setDependencies(dependencies);
 	}
 
-	//-----------------------------------------------------------------------------------
+	//-----------------------------------------------------------
 	public static int compare(Book a, Book b)
 	{
 		String aNum = (String)a.getState("title");
@@ -211,6 +238,20 @@ public class Book extends EntityBase
 
 		if (status.equals("out"))
 			persistentState.setProperty("status", "in");
+	}
+
+	public void done()
+	{
+		myLibrarian.transactionDone();
+	}
+
+	/**
+	 *
+	 */
+	//----------------------------------------------------------
+	public void createAndShowBookView()
+	{
+		
 	}
 
 	//-----------------------------------------------------------
