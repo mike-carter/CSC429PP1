@@ -40,7 +40,7 @@ public class LibrarianView extends View
 
 	// constructor for this class -- takes a model object
 	//----------------------------------------------------------
-	public LibrarianView(Librarian lib)
+	public LibrarianView(IModel lib)
 	{
 		super(lib, "LibrarianView");
 		
@@ -154,9 +154,7 @@ public class LibrarianView extends View
 	//---------------------------------------------------------
 	public void updateState(String key, Object value)
 	{
-		// STEP 6: Be sure to finish the end of the 'perturbation'
-		// by indicating how the view state gets updated.
-		if (key.equals("LoginError") == true)
+		if (key.equals("TransactionError") == true)
 		{
 			// display the passed text
 			displayErrorMessage((String)value);

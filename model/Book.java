@@ -6,6 +6,7 @@ import java.sql.SQLException;
 import java.util.Enumeration;
 import java.util.Properties;
 import java.util.Vector;
+import java.util.Hashtable;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
@@ -13,6 +14,9 @@ import javafx.stage.Stage;
 import exception.InvalidPrimaryKeyException;
 import database.*;
 import userinterface.MainStageContainer;
+import userinterface.View;
+import userinterface.ViewFactory;
+import userinterface.WindowPosition;
 
 
 /**
@@ -30,6 +34,7 @@ public class Book extends EntityBase
 
 	protected Stage myStage;
 	protected Librarian myLibrarian;
+	protected Hashtable<String, Scene> myViews;
 
 	//-----------------------------------------------------------
 	public Book(Librarian lib)
@@ -37,6 +42,7 @@ public class Book extends EntityBase
 		super(myTableName);
 		
 		myStage = MainStageContainer.getInstance();
+		myViews = new Hashtable<String, Scene>();
 
 		myLibrarian = lib;
 	}
@@ -184,6 +190,10 @@ public class Book extends EntityBase
 	//----------------------------------------------------------------
 	public void stateChangeRequest(String key, Object value)
 	{
+		if (key.equals("Done"))
+		{
+			done();
+		}
 
 		myRegistry.updateSubscribers(key, this);
 	}
@@ -220,11 +230,11 @@ public class Book extends EntityBase
 	//----------------------------------------------------------
 	public void checkoutBook()
 	{
-		String status = persistentState.getProperty("status");
+		String status = persistentState.getProperty("bookStatus");
 		status = status.toLowerCase();
 
 		if (status.equals("in"))
-			persistentState.setProperty("status", "out");
+			persistentState.setProperty("bookStatus", "out");
 	}
 
 	/**
@@ -233,16 +243,16 @@ public class Book extends EntityBase
 	//----------------------------------------------------------
 	public void returnBook()
 	{
-		String status = persistentState.getProperty("status");
+		String status = persistentState.getProperty("bookStatus");
 		status = status.toLowerCase();
 
 		if (status.equals("out"))
-			persistentState.setProperty("status", "in");
+			persistentState.setProperty("bookStatus", "in");
 	}
 
 	public void done()
 	{
-		myLibrarian.transactionDone();
+		myLibrarian.done();
 	}
 
 	/**
@@ -251,7 +261,19 @@ public class Book extends EntityBase
 	//----------------------------------------------------------
 	public void createAndShowBookView()
 	{
-		
+		Scene localScene = myViews.get("BookView");
+
+		if (localScene == null)
+		{
+			View newView = ViewFactory.createView("BookView", this);
+			localScene = new Scene(newView);
+			myViews.put("BookView", localScene);
+		}
+
+		myStage.setScene(localScene);
+		myStage.sizeToScene();
+
+		WindowPosition.placeCenter(myStage);
 	}
 
 	//-----------------------------------------------------------

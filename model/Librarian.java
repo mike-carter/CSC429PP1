@@ -26,12 +26,15 @@ import userinterface.WindowPosition;
 //===============================================================
 public class Librarian implements IModel, IView
 {
+	private IModel currentModel;
+	
 	private Properties dependencies;
 	private ModelRegistry myRegistry;
 
 	private Hashtable<String, Scene> myViews;
 	private Stage myStage;
 
+	
 	private String transactionErrorMessage = "";
 	
 	public Librarian()
@@ -55,7 +58,8 @@ public class Librarian implements IModel, IView
 	 * Method called from client to get the value of a particular field
 	 * held by the objects encapsulated by this object.
 	 *
-	 * @param	key	Name of database column (field) for which the client wants the value
+	 * @param	key	Name of database column (field) for which the client 
+	 *          wants the value
 	 *
 	 * @return	Value associated with the field
 	 */
@@ -92,7 +96,7 @@ public class Librarian implements IModel, IView
 		// DEBUG System.out.println("Teller.sCR: key = " + key);
 		if (key.equals("Done"))
 		{
-			transactionDone();
+			done();
 		}
 		else if (key.equals("InsertNewBook"))
 		{
@@ -128,7 +132,7 @@ public class Librarian implements IModel, IView
 
 		if (currentScene == null)
 		{
-			LibrarianView newView = new LibrarianView(this);
+			View newView = ViewFactory.createView("LibrarianView", this);
 			currentScene = new Scene(newView);
 			myViews.put("LibrarianView", currentScene); 
 		}
@@ -157,8 +161,9 @@ public class Librarian implements IModel, IView
 		
 	}
 
-	public void transactionDone()
+	public void done()
 	{
+		createAndShowLibrarianView();
 		
 	}
 

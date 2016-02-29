@@ -13,3 +13,4 @@
 [2/10/16 1:12 PM]|BookCollection|getSelectQueryResult|Error|NOTAG|null<SQL Exception: 1064: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '%' at line 1>
 [2/10/16 1:56 PM]|JDBCBroker|JDBCBroker|Error|NOTAG|null<Could not load driver class[com.mysql.jdbc.Driver]>
 [2/10/16 3:23 PM]|PatronCollection|getSelectQueryResult|Error|NOTAG|null<SQL Exception: 1054: Unknown column 'zip' in 'where clause'>
+[2/29/16 12:33 PM]|Book|insertAutoIncrementalPersistentState|Error|NOTAG|null<SQL Exception: 0: Data truncation: Data too long for column 'bookStatus' at row 1>
