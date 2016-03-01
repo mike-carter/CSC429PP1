@@ -130,19 +130,20 @@ public class LibrarianView extends View
 	//-------------------------------------------------------------
 	public void processAction(Event evt)
 	{
+		Librarian myLib = (Librarian)myModel;
 	    Object eventSource = evt.getSource();
 
 		if (eventSource.equals(newBookButton))
 		{
-			myModel.stateChangeRequest("InsertNewBook", "");
+			myLib.createNewBook();
 		}
 		else if (eventSource.equals(newPatronButton))
 		{
-			myModel.stateChangeRequest("InsertNewPatron", "");
+			myLib.createNewPatron();
 		}
 		else if (eventSource.equals(searchBooksButton))
 		{
-			myModel.stateChangeRequest("SearchBooks", "");
+			myLib.createAndShowSearchBooksView();
 		}
 		else if (eventSource.equals(doneButton))
 		{

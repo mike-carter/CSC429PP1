@@ -4,15 +4,19 @@ package model;
 // System imports
 import java.util.Properties;
 import java.util.Vector;
+import java.util.Hashtable;
 import javafx.scene.Scene;
+import javafx.stage.Stage;
 
 // Project imports
 import exception.InvalidPrimaryKeyException;
 import event.Event;
 import database.*;
 import impresario.IView;
+import userinterface.MainStageContainer;
 import userinterface.View;
 import userinterface.ViewFactory;
+import userinterface.WindowPosition;
 
 /**
  * @author Caleb Butcher, Michael Carter
@@ -25,6 +29,8 @@ public class BookCollection extends EntityBase implements IView
 
 	private Vector<Book> books;
 
+	protected Librarian myLibrarian;
+
 	/**
 	 * BookCollection class constructor
 	 */
@@ -32,6 +38,16 @@ public class BookCollection extends EntityBase implements IView
 	{
 		super(myTableName);
 		books = new Vector<Book>();
+	}
+
+	public BookCollection(Librarian lib)
+	{
+		super(myTableName);
+		books = new Vector<Book>();
+
+		myStage = MainStageContainer.getInstance();
+		myViews = new Hashtable<String, Scene>();
+		myLibrarian = lib;
 	}
 
 	/** */
@@ -249,5 +265,27 @@ public class BookCollection extends EntityBase implements IView
 		{
 			mySchema = getSchemaInfo(tableName);
 		}
+	}
+
+	public void createAndShowView()
+	{
+		Scene localScene = myViews.get("BookCollectionView");
+
+		if (localScene == null)
+		{
+			View newView = ViewFactory.createView("BookCollectionView", this);
+			localScene = new Scene(newView);
+			myViews.put("BookCollectionView", localScene);
+		}
+
+		myStage.setScene(localScene);
+		myStage.sizeToScene();
+
+		WindowPosition.placeCenter(myStage);
+	}
+
+	public void done()
+	{
+		myLibrarian.createAndShowSearchBooksView();
 	}
 }

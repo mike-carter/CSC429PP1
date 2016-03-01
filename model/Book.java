@@ -190,11 +190,6 @@ public class Book extends EntityBase
 	//----------------------------------------------------------------
 	public void stateChangeRequest(String key, Object value)
 	{
-		if (key.equals("Done"))
-		{
-			done();
-		}
-
 		myRegistry.updateSubscribers(key, this);
 	}
 
@@ -274,6 +269,20 @@ public class Book extends EntityBase
 		myStage.sizeToScene();
 
 		WindowPosition.placeCenter(myStage);
+	}
+
+	//-----------------------------------------------------------
+	public Vector<String> getEntryListView()
+	{
+		Vector<String> v = new Vector<String>();
+
+		v.addElement(persistentState.getProperty("bookId"));
+		v.addElement(persistentState.getProperty("author"));
+		v.addElement(persistentState.getProperty("title"));
+		v.addElement(persistentState.getProperty("pubYear"));
+		v.addElement(persistentState.getProperty("bookStatus"));
+
+		return v;
 	}
 
 	//-----------------------------------------------------------

@@ -6,10 +6,17 @@ import java.sql.SQLException;
 import java.util.Enumeration;
 import java.util.Properties;
 import java.util.Vector;
+import java.util.Hashtable;
+import javafx.scene.Scene;
+import javafx.stage.Stage;
 
 // Project imports
 import exception.InvalidPrimaryKeyException;
 import database.*;
+import userinterface.MainStageContainer;
+import userinterface.View;
+import userinterface.ViewFactory;
+import userinterface.WindowPosition;
 
 
 /**
@@ -23,8 +30,11 @@ public class Patron extends EntityBase
 
     protected Properties dependencies;
 
-	
     private String updateStatusMessage = "";
+
+	protected Stage myStage;
+	protected Hashtable<String, Scene> myViews;
+	protected Librarian myLibrarian;
 
     /**
      * Patron class constructor: Primary key instantiation
@@ -87,6 +97,26 @@ public class Patron extends EntityBase
 
 		setDependencies();
 
+	    setData(props);
+    }
+
+	
+	public Patron(Librarian lib)
+	{
+		super(myTableName);
+
+		setDependencies();
+
+		myStage = MainStageContainer.getInstance();
+		myViews = new Hashtable<String, Scene>();
+
+		myLibrarian = lib;
+	}
+
+	/** */
+	//-----------------------------------------------------------
+	public void setData(Properties props)
+	{
 		persistentState = new Properties();
 
 		Enumeration allKeys = props.propertyNames();
@@ -100,7 +130,7 @@ public class Patron extends EntityBase
 				persistentState.setProperty(nextKey, nextValue);
 			}
 		}
-    }
+	}
 
 	/** */
 	//-----------------------------------------------------------
@@ -144,13 +174,15 @@ public class Patron extends EntityBase
 
 				updatePersistentState(mySchema, persistentState, whereClause);
 
-				updateStatusMessage = String.format("Data for Patron ID : %s updated successfully in database!", persistentState.getProperty("AccountNumber"));
+				updateStatusMessage = String.format("Data for Patron ID : %s updated successfully in database!",
+													persistentState.getProperty("patronId"));
 			}
 			else
-			{
+			{	
 				Integer patronId = insertAutoIncrementalPersistentState(mySchema, persistentState);
 				persistentState.setProperty("patronId", patronId.toString());
-				updateStatusMessage = String.format("Data for new Patron : %s addedd successfully in database!", persistentState.getProperty("patronId"));
+				updateStatusMessage = String.format("Data for new Patron : %s addedd successfully in database!",
+													persistentState.getProperty("patronId"));
 			}
 		}
 		catch (SQLException ex)
@@ -165,7 +197,7 @@ public class Patron extends EntityBase
 	//-----------------------------------------------------------
 	public Object getState(String key)
 	{
-        if (key.equals("updateStatusMessage") == true)
+        if (key.equals("UpdateStatusMessage") == true)
 			return updateStatusMessage;
 
         return persistentState.getProperty(key);
@@ -205,20 +237,45 @@ public class Patron extends EntityBase
 	/** */
 	//-----------------------------------------------------------
 	public void setPatronActive()
-      {
-		  String status = persistentState.getProperty("patronStatus");
-		  status = status.toLowerCase();
+    {
+		String status = persistentState.getProperty("patronStatus");
+		status = status.toLowerCase();
 
-		  if (status.equals("inc"))
-			  persistentState.setProperty("patronStatus", "act");
-      }
+		if (status.equals("inc"))
+			persistentState.setProperty("patronStatus", "act");
+	}
+
+	/** */
+	//-----------------------------------------------------------
+	public void createAndShowPatronView()
+	{
+		Scene localScene = myViews.get("PatronView");
+		if (localScene == null)
+		{
+			View newView = ViewFactory.createView("PatronView", this);
+			localScene = new Scene(newView);
+			myViews.put("PatronView", localScene);
+		}
+
+		myStage.setScene(localScene);
+		myStage.sizeToScene();
+
+		WindowPosition.placeCenter(myStage);
+	}
+
+	/** */
+	//-----------------------------------------------------------
+	public void done()
+	{
+		myLibrarian.done();
+	}
 
 	/** */
 	//-----------------------------------------------------------
 	protected void initializeSchema(String tableName)
 	{
 		if (mySchema == null)
-    	{
+	    {
 			mySchema = getSchemaInfo(tableName);
 		}
 	}

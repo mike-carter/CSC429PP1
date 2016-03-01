@@ -15,16 +15,18 @@ public class ViewFactory {
 		{
 			return new BookView(model);
 		}
-		/*
 		else if(viewName.equals("PatronView") == true)
 		{
 			return new PatronView(model);
+		}
+		else if(viewName.equals("SearchBooksView") == true)
+		{
+			return new SearchBooksView(model);
 		}
 		else if(viewName.equals("BookCollectionView") == true)
 		{
 			return new BookCollectionView(model);
 		}
-		*/
 		else
 			return null;
 	}

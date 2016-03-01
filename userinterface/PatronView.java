@@ -3,6 +3,7 @@ package userinterface;
 
 // system imports
 import java.util.Properties;
+import java.util.Enumeration;
 
 import javafx.collections.ObservableList;
 import javafx.collections.FXCollections;
@@ -29,7 +30,7 @@ import javafx.stage.Stage;
 
 // project imports
 import impresario.IModel;
-import model.Book;
+import model.Patron;
 
 /** The class containing the Teller View  for the ATM application */
 //==============================================================
@@ -59,6 +60,7 @@ public class PatronView extends View
 		// create a container for showing the contents
 		VBox container = new VBox(10);
 
+		container.setPrefWidth(650);
 		container.setPadding(new Insets(15, 5, 5, 5));
 
 		// create a Node (Text) for showing the title
@@ -80,8 +82,9 @@ public class PatronView extends View
 	//-------------------------------------------------------------
 	private Node createTitle()
 	{
-		
-		Text titleText = new Text("        LIBRARY SYSTEM        ");
+		Text titleText = new Text("                            "+
+								  "LIBRARY SYSTEM"+
+								  "                            ");
 		titleText.setFont(Font.font("Garamond", FontWeight.BOLD, 20));
 		titleText.setTextAlignment(TextAlignment.CENTER);
 		titleText.setFill(Color.BLACK);
@@ -124,52 +127,54 @@ public class PatronView extends View
 
 		
 		Label cityLabel = new Label("City: ");
-		grid.add(cityLabel, 0, 1);
+		grid.add(cityLabel, 0, 2);
 
 		cityField = new TextField();
 		cityField.setOnAction(eventHandler);
-		grid.add(cityField, 1, 1);
+		grid.add(cityField, 1, 2);
 
 
 		Label stateCodeLabel = new Label("State: ");
-		grid.add(stateCodeLabel, 0, 2);
+		grid.add(stateCodeLabel, 0, 3);
 
 		stateCodeField = new TextField();
 		stateCodeField.setPromptText("ex. \"NY\" or \"KY\" ");
 		stateCodeField.setOnAction(eventHandler);
-		grid.add(stateCodeField, 1, 2);
+		grid.add(stateCodeField, 1, 3);
 
 
 		Label zipCodeLabel = new Label("Zip Code: ");
-		grid.add(zipCodeLabel, 0, 2);
+		grid.add(zipCodeLabel, 0, 4);
 
 		zipCodeField = new TextField();
 		zipCodeField.setOnAction(eventHandler);
-		grid.add(zipCodeField, 1, 2);
+		grid.add(zipCodeField, 1, 4);
 
 		
 		Label emailLabel = new Label("Email: ");
-		grid.add(emailLabel, 0, 2);
+		grid.add(emailLabel, 0, 5);
 
 		emailField = new TextField();
 		emailField.setOnAction(eventHandler);
-		grid.add(emailField, 1, 2);
+		grid.add(emailField, 1, 5);
 
 
 		Label dateOfBirthLabel = new Label("Date Of Birth: ");
-		grid.add(dateOfBirthLabel, 0, 2);
+		grid.add(dateOfBirthLabel, 0, 6);
 
 		dateOfBirthField = new TextField();
 		dateOfBirthField.setPromptText("yyyy-mm-dd");
 		dateOfBirthField.setOnAction(eventHandler);
-		grid.add(dateOfBirthField, 1, 2);
+		grid.add(dateOfBirthField, 1, 6);
 
 		
 		ObservableList<String> options =
-			FXCollections.observableArrayList("Active", "Inactive");
+			//FXCollections.observableArrayList("Active", "Inactive");
+			FXCollections.observableArrayList("Act", "Inc");
 		statusBox = new ComboBox(options);
-		statusBox.setValue("Active");
-		grid.add(statusBox, 0, 3, 2, 1);
+		//statusBox.setValue("Active");
+		statusBox.setValue("Act");
+		grid.add(statusBox, 0, 7, 2, 1);
 		
 
 		HBox btnContainer = new HBox(10);
@@ -183,7 +188,7 @@ public class PatronView extends View
 		submitButton.setOnAction(eventHandler);
 		btnContainer.getChildren().add(submitButton);
 		
-		grid.add(btnContainer, 0, 5, 2, 1); 
+		grid.add(btnContainer, 0, 9, 2, 1); 
 
 		return grid;
 	}
@@ -207,7 +212,7 @@ public class PatronView extends View
 		// User selects Done
 		if (evt.getSource().equals(doneButton))
 		{
-			myModel.stateChangeRequest("Done", "");
+			((Patron)myModel).done();
 		}
 
 		// User selects Submit or hits Enter/Return on any text fields
@@ -259,7 +264,7 @@ public class PatronView extends View
 			if ((email == null) || email.isEmpty())
 			{
 				displayErrorMessage("Please enter an email!");
-				nameField.requestFocus();
+				emailField.requestFocus();
 				return;
 			}
 
@@ -287,7 +292,7 @@ public class PatronView extends View
 					return;
 				}
 			}
-			catch
+			catch (Exception e)
 			{
 				displayErrorMessage("Invalid date!");
 				dateOfBirthField.requestFocus();
@@ -305,7 +310,7 @@ public class PatronView extends View
 			p.setProperty("address", address);
 			p.setProperty("city", city);
 			p.setProperty("stateCode", stateCode);
-			p.setProperty("zipCode", zipCode);
+			p.setProperty("zipcode", zipCode);
 			p.setProperty("email", email);
 			p.setProperty("dateOfBirth", dateOfBirth);
 			p.setProperty("patronStatus", status);

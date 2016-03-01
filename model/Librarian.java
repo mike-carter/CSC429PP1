@@ -26,17 +26,16 @@ import userinterface.WindowPosition;
 //===============================================================
 public class Librarian implements IModel, IView
 {
-	private IModel currentModel;
-	
 	private Properties dependencies;
 	private ModelRegistry myRegistry;
 
 	private Hashtable<String, Scene> myViews;
 	private Stage myStage;
-
 	
 	private String transactionErrorMessage = "";
-	
+
+	/** */
+	//-----------------------------------------------------------
 	public Librarian()
 	{
 		myStage = MainStageContainer.getInstance();
@@ -79,9 +78,6 @@ public class Librarian implements IModel, IView
 	private void setDependencies()
 	{
 		dependencies = new Properties();
-		dependencies.setProperty("InsertNewBook", "TransactionError");
-		dependencies.setProperty("InsertNewPatron", "TransactionError");
-		dependencies.setProperty("SearchBooks", "TransactionError");
 
 		myRegistry.setDependencies(dependencies);
 	}
@@ -91,26 +87,7 @@ public class Librarian implements IModel, IView
 	//-----------------------------------------------------------
 	public void stateChangeRequest(String key, Object value)
 	{
-		// STEP 4: Write the sCR method component for the key you
-		// just set up dependencies for
-		// DEBUG System.out.println("Teller.sCR: key = " + key);
-		if (key.equals("Done"))
-		{
-			done();
-		}
-		else if (key.equals("InsertNewBook"))
-		{
-		    createNewBook();
-		}
-		else if (key.equals("InsertNewPatron"))
-		{
-		    createNewPatron();
-		}
-		else if (key.equals("InsertNewBook"))
-		{
-		    searchBooks();
-		}
-		else if (key.equals("Exit"))
+		if (key.equals("Exit"))
 		{
 		    System.exit(0);
 		}
@@ -125,7 +102,8 @@ public class Librarian implements IModel, IView
 		stateChangeRequest(key, value);
 	}
 
-	
+	/** */
+	//-----------------------------------------------------------
 	public void createAndShowLibrarianView()
 	{
 		Scene currentScene = (Scene)myViews.get("LibrarianView");
@@ -143,7 +121,27 @@ public class Librarian implements IModel, IView
 		WindowPosition.placeCenter(myStage);
 	}
 
-	
+	/** */
+	//-----------------------------------------------------------
+	public void createAndShowSearchBooksView()
+	{
+		Scene currentScene = (Scene)myViews.get("SearchBooksView");
+
+		if (currentScene == null)
+		{
+			View newView = ViewFactory.createView("SearchBooksView", this);
+			currentScene = new Scene(newView);
+			myViews.put("SearchBooksView", currentScene); 
+		}
+
+		myStage.setScene(currentScene);
+		myStage.sizeToScene();
+
+		WindowPosition.placeCenter(myStage);
+	}
+
+	/** */
+	//-----------------------------------------------------------
 	public void createNewBook()
 	{
 		Book book = new Book(this);
@@ -151,27 +149,50 @@ public class Librarian implements IModel, IView
 		book.createAndShowBookView();
 	}
 
+	/** */
+	//-----------------------------------------------------------
 	public void createNewPatron()
 	{
-		
+		Patron patron = new Patron(this);
+
+		patron.createAndShowPatronView();
 	}
 
-	public void searchBooks()
+	/** */
+	//-----------------------------------------------------------
+	public void searchBooks(String keyword)
 	{
-		
+		BookCollection books = new BookCollection(this);
+
+		transactionErrorMessage = "";
+		try
+		{
+			books.findBooksWithTitleLike(keyword);
+			books.createAndShowView();
+		}
+		catch (Exception exc)
+		{
+			transactionErrorMessage = exc.getMessage();
+		}
 	}
 
+	/** */
+	//-----------------------------------------------------------
 	public void done()
 	{
 		createAndShowLibrarianView();
 		
 	}
 
+	/** */
+	//-----------------------------------------------------------
 	public void subscribe(String key, IView subscriber)
 	{
 		myRegistry.subscribe(key, subscriber);
 	}
 
+	/** */
+	//-----------------------------------------------------------
 	public void unSubscribe(String key, IView subscriber)
 	{
 		myRegistry.unSubscribe(key, subscriber);

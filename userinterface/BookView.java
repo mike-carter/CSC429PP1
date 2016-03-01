@@ -56,6 +56,7 @@ public class BookView extends View
 		VBox container = new VBox(10);
 
 		container.setPadding(new Insets(15, 5, 5, 5));
+		container.setPrefWidth(650);
 
 		// create a Node (Text) for showing the title
 		container.getChildren().add(createTitle());
@@ -66,7 +67,7 @@ public class BookView extends View
 		// Error message area
 		container.getChildren().add(createStatusLog("                          "));
 
-		getChildren().add(container);
+		getChildren().add(container);;
 
 		// STEP 0: Be sure you tell your model what keys you are interested in
 		myModel.subscribe("TransactionError", this);
@@ -76,8 +77,9 @@ public class BookView extends View
 	//-------------------------------------------------------------
 	private Node createTitle()
 	{
-		
-		Text titleText = new Text("        LIBRARY SYSTEM        ");
+		Text titleText = new Text("                            "+
+								  "LIBRARY SYSTEM"+
+								  "                            ");
 		titleText.setFont(Font.font("Garamond", FontWeight.BOLD, 20));
 		titleText.setTextAlignment(TextAlignment.CENTER);
 		titleText.setFill(Color.BLACK);
@@ -128,9 +130,11 @@ public class BookView extends View
 		grid.add(pubYearField, 1, 2);
 
 		ObservableList<String> options =
-			FXCollections.observableArrayList("Active", "Inactive");
+			//FXCollections.observableArrayList("Active", "Inactive");
+			FXCollections.observableArrayList("In", "Out");
 		statusBox = new ComboBox(options);
-		statusBox.setValue("Active");
+		//statusBox.setValue("Active");
+		statusBox.setValue("In");
 		grid.add(statusBox, 0, 3, 2, 1);
 		
 
@@ -169,7 +173,7 @@ public class BookView extends View
 		// User selects Done
 		if (evt.getSource().equals(doneButton))
 		{
-			myModel.stateChangeRequest("Done", "");
+			((Book)myModel).done();
 		}
 
 		// User selects Submit or hits Enter/Return on any text fields
@@ -244,7 +248,7 @@ public class BookView extends View
 		book.update();
 
 		String message = (String)book.getState("UpdateStatusMessage");
-		displayErrorMessage(message);
+		statusLog.displayMessage(message);
 	}
 
 
